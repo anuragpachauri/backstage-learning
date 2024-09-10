@@ -1,0 +1,3 @@
+"use strict";(()=>{(self.webpackChunkapp=self.webpackChunkapp||[]).push([[2070],{72070:(M,e,t)=>{t.r(e),t.d(e,{StatuspageComponent:()=>u});var n=t(14041),s=t(96872),_=t(99424),E=t(21332),l=t(85704),m=t(30330),r=t(15502),c=t(29163);const u=({name:O})=>{const{loading:p,error:a,value:o}=(0,c.k)(O);if(p)return n.createElement(s.k,null);if(a)return n.createElement(_._,{error:a});const D=o?.url&&n.createElement(m.A,{"aria-label":"Go to our statuspage",role:"button",title:"Go to statuspage(.io)",href:o?.url,target:"_blank"},n.createElement(r.A,null));return n.createElement(E.n,{title:"Status of our services",action:D},n.createElement(l.S,{components:o?.components||[],componentGroups:o?.componentGroups||[]}))}}}]);})();
+
+//# sourceMappingURL=2070.c34c9f17.chunk.js.map

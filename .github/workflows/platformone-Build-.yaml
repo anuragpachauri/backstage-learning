@@ -41,6 +41,6 @@ jobs:
     if: github.ref_type == 'tag' 
     uses: ./.github/workflows/Template-aks-acr-push.yml
     with:
-      IMAGE_NAME: "backstage/frontend"
+      IMAGE_NAME: "anuragpachauri434/backstage"
  
     secrets: inherit    
