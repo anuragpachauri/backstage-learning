@@ -6,24 +6,65 @@ if [ "$#" -ne 2 ]; then
     exit 1
 fi
 
-DOCKERFILE_PATH=$1
+NEW_DOCKERFILE_PATH=$1
 NEW_CONFIG_VALUE=$2
 
-# Check if Dockerfile exists
-if [ ! -f "$DOCKERFILE_PATH" ]; then
-    echo "Error: Dockerfile not found at $DOCKERFILE_PATH"
-    exit 1
-fi
+# Create a new Dockerfile at the specified path
+cat <<EOL > "$NEW_DOCKERFILE_PATH"
+# This dockerfile builds an image for the backend package.
+# It should be executed with the root of the repo as docker context.
+#
+# Before building this image, be sure to have run the following commands in the repo root:
+#
+# yarn install
+# yarn tsc
+# yarn build:backend
+#
+# Once the commands have been run, you can build the image using \`yarn build-image\`
 
-# Print Dockerfile contents before modification
-echo "Before modification:"
-cat "$DOCKERFILE_PATH"
+FROM node:18-bookworm-slim
 
-# Use sed to replace the value
-sed -i "s|app-config.production.yaml|$NEW_CONFIG_VALUE|g" "$DOCKERFILE_PATH"
+# Install isolate-vm dependencies, these are needed by the @backstage/plugin-scaffolder-backend.
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get update && \
+    apt-get install -y --no-install-recommends python3 g++ build-essential && \
+    yarn config set python /usr/bin/python3
 
-# Print Dockerfile contents after modification
-echo "After modification:"
-cat "$DOCKERFILE_PATH"
+# Install sqlite3 dependencies. You can skip this if you don't use sqlite3 in the image,
+# in which case you should also move better-sqlite3 to "devDependencies" in package.json.
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get update && \
+    apt-get install -y --no-install-recommends libsqlite3-dev
 
-echo "Dockerfile updated successfully."
+# From here on we use the least-privileged \`node\` user to run the backend.
+USER node
+
+# This should create the app dir as \`node\`.
+# If it is instead created as \`root\` then the \`tar\` command below will fail: \`can't create directory 'packages/': Permission denied\`.
+# If this occurs, then ensure BuildKit is enabled (\`DOCKER_BUILDKIT=1\`) so the app dir is correctly created as \`node\`.
+WORKDIR /app
+
+# This switches many Node.js dependencies to production mode.
+ENV NODE_ENV production
+
+# Copy repo skeleton first, to avoid unnecessary docker cache invalidation.
+# The skeleton contains the package.json of each package in the monorepo,
+# and along with yarn.lock and the root package.json, that's enough to run yarn install.
+COPY --chown=node:node yarn.lock package.json packages/backend/dist/skeleton.tar.gz ./
+RUN tar xzf skeleton.tar.gz && rm skeleton.tar.gz
+
+RUN --mount=type=cache,target=/home/node/.cache/yarn,sharing=locked,uid=1000,gid=1000 \
+    yarn install --frozen-lockfile --production --network-timeout 300000
+
+# Then copy the rest of the backend bundle, along with any other files we might want.
+COPY --chown=node:node packages/backend/dist/bundle.tar.gz app-config*.yaml ./
+COPY --chown=node:node examples ./examples
+COPY --chown=node:node examples ./azure-deploy
+RUN tar xzf bundle.tar.gz && rm bundle.tar.gz
+
+CMD ["node", "packages/backend", "--config", "app-config.yaml", "--config", "$NEW_CONFIG_VALUE"]
+EOL
+
+echo "New Dockerfile created successfully at $NEW_DOCKERFILE_PATH."
