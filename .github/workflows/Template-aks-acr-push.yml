@@ -36,6 +36,11 @@ jobs:
         run: |
           ./update_dockerfile.sh ./packages/backend/Dockerfile new-config.yaml
           
+      - name: Verify Dockerfile Update
+        run: |
+          echo "Updated Dockerfile contents:"
+          cat ./packages/backend/Dockerfile
+          
       - name: Build & Push
         uses: docker/build-push-action@v5.3.0
         with:
