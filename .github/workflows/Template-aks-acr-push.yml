@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   Build:
-    if: github.ref_type == 'tag' || github.event_name == 'push'
+    if: github.ref_type == 'tag' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
