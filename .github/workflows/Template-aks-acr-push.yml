@@ -32,6 +32,9 @@ jobs:
           username: ${{ secrets.AZURE_NONPROD_PLATFORMENG_ACR_USERNAME }}
           password: ${{ secrets.AZURE_NONPROD_PLATFORMENG_ACR_PASSWORD }}
           
+      - name: List files
+        run: ls -R ./packages/backend/dist
+          
       - name: Build & Push
         uses: docker/build-push-action@v5.3.0
         with:
