@@ -36,8 +36,6 @@ WORKDIR /app
 # This switches many Node.js dependencies to production mode.
 ENV NODE_ENV production
 
-ARG ENVIREMENTFILE=local  
-ENV ENVIREMENTFILE=${ENVIREMENTFILE}
 
 # Copy repo skeleton first, to avoid unnecessary docker cache invalidation.
 # The skeleton contains the package.json of each package in the monorepo,
@@ -53,5 +51,5 @@ COPY --chown=node:node packages/backend/dist/bundle.tar.gz app-config*.yaml ./
 COPY --chown=node:node examples ./examples
 COPY --chown=node:node examples ./azure-deploy
 RUN tar xzf bundle.tar.gz && rm bundle.tar.gz
-RUN echo "ENVIREMENTFILE=${ENVIREMENTFILE}"
-CMD ["node", "packages/backend", "--config", "app-config.yaml", "--config", "app-config.${ENVIREMENTFILE}.yaml"]
+
+CMD ["node", "packages/backend", "--config", "app-config.yaml", "--config", "app-config.production.yaml"]
