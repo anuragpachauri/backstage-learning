@@ -35,6 +35,7 @@ jobs:
       - name: Run Dockerfile Update Script
         run: |
           ./update_dockerfile.sh ./packages/backend/Dockerfile new-config.yaml
+          cat ./packages/backend/Dockerfile
           
       - name: Verify Dockerfile Update
         run: |
