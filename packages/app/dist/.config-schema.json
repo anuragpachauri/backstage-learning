@@ -149,51 +149,6 @@
       }
     },
     {
-      "path": "../../node_modules/@backstage/core-components/config.d.ts",
-      "value": {
-        "type": "object",
-        "properties": {
-          "auth": {
-            "type": "object",
-            "properties": {
-              "autologout": {
-                "description": "Autologout feature configuration",
-                "type": "object",
-                "properties": {
-                  "enabled": {
-                    "description": "Enable or disable the autologout feature",
-                    "visibility": "frontend",
-                    "type": "boolean"
-                  },
-                  "idleTimeoutMinutes": {
-                    "description": "Number of minutes after which the inactive user is logged out automatically.\nDefault is 60 minutes (1 hour)",
-                    "visibility": "frontend",
-                    "type": "number"
-                  },
-                  "promptBeforeIdleSeconds": {
-                    "description": "Number of seconds before the idle timeout where the user will be asked if it's still active.\nA dialog will be shown.\nDefault is 10 seconds.\nSet to 0 seconds to disable the prompt.",
-                    "visibility": "frontend",
-                    "type": "number"
-                  },
-                  "useWorkerTimers": {
-                    "description": "Enable/disable the usage of worker thread timers instead of main thread timers.\nDefault is true.\nIf you experience some browser incompatibility, you may try to set this to false.",
-                    "visibility": "frontend",
-                    "type": "boolean"
-                  },
-                  "logoutIfDisconnected": {
-                    "description": "Enable/disable the automatic logout also on users that are logged in but with no Backstage tabs open.\nDefault is true.",
-                    "visibility": "frontend",
-                    "type": "boolean"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-      }
-    },
-    {
       "path": "../../node_modules/@backstage/core-app-api/config.d.ts",
       "value": {
         "type": "object",
@@ -419,6 +374,51 @@
           "app",
           "backend"
         ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "path": "../../node_modules/@backstage/core-components/config.d.ts",
+      "value": {
+        "type": "object",
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "autologout": {
+                "description": "Autologout feature configuration",
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "description": "Enable or disable the autologout feature",
+                    "visibility": "frontend",
+                    "type": "boolean"
+                  },
+                  "idleTimeoutMinutes": {
+                    "description": "Number of minutes after which the inactive user is logged out automatically.\nDefault is 60 minutes (1 hour)",
+                    "visibility": "frontend",
+                    "type": "number"
+                  },
+                  "promptBeforeIdleSeconds": {
+                    "description": "Number of seconds before the idle timeout where the user will be asked if it's still active.\nA dialog will be shown.\nDefault is 10 seconds.\nSet to 0 seconds to disable the prompt.",
+                    "visibility": "frontend",
+                    "type": "number"
+                  },
+                  "useWorkerTimers": {
+                    "description": "Enable/disable the usage of worker thread timers instead of main thread timers.\nDefault is true.\nIf you experience some browser incompatibility, you may try to set this to false.",
+                    "visibility": "frontend",
+                    "type": "boolean"
+                  },
+                  "logoutIfDisconnected": {
+                    "description": "Enable/disable the automatic logout also on users that are logged in but with no Backstage tabs open.\nDefault is true.",
+                    "visibility": "frontend",
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
         "$schema": "http://json-schema.org/draft-07/schema#"
       }
     },

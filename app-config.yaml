@@ -79,12 +79,25 @@ techdocs:
     type: 'local' # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
 
 auth:
-  providers:
+  # providers:
+  #   microsoft:
+  #     development:
+  #       clientId: 
+  #       clientSecret: 
+  #       tenantId: 
+  #       signIn:
+  #         resolvers:
+  #           - resolver: emailMatchingUserEntityProfileEmail
+
+ providers:    
     microsoft:
       development:
         clientId: 
+          $env: AZURE_CLIENT_ID
         clientSecret: 
+          $env: AZURE_CLIENT_SECRET
         tenantId: 
+          $env: AZURE_TENANTID_ID
         signIn:
           resolvers:
             - resolver: emailMatchingUserEntityProfileEmail
