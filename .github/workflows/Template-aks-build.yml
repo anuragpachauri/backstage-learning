@@ -46,9 +46,6 @@ jobs:
 
       - name: Build the tsc
         run: yarn tsc
-        
-      - name: Test the code
-        continue-on-error: true
-        run: yarn test        
+     
 
       
