@@ -38,7 +38,7 @@ jobs:
     
   build-push-acr-app:
     needs: build-app
-    if: github.ref_type == 'tag'
+    if: github.ref_type == 'tag' || github.ref == 'refs/heads/main'
     uses: ./.github/workflows/Template-aks-acr-push.yml
     with:
       IMAGE_NAME: "backstage/frontend"
