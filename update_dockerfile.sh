@@ -15,8 +15,15 @@ if [ ! -f "$DOCKERFILE_PATH" ]; then
     exit 1
 fi
 
+# Print Dockerfile contents before modification
+echo "Before modification:"
+cat "$DOCKERFILE_PATH"
+
 # Use sed to replace the value
 sed -i "s|app-config.production.yaml|$NEW_CONFIG_VALUE|g" "$DOCKERFILE_PATH"
 
-echo "Dockerfile updated successfully."
+# Print Dockerfile contents after modification
+echo "After modification:"
+cat "$DOCKERFILE_PATH"
 
+echo "Dockerfile updated successfully."
