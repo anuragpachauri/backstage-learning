@@ -1,0 +1,117 @@
+name: AKS-Platformone-Deploy
+on:
+  workflow_call:    
+  workflow_dispatch:
+    inputs:
+      repo_commit_id:
+       description: 'Enter the commit SHA you want to build (leave blank for the latest)'
+       required: false
+      ACR_Image_Path:
+        description: 'ACR Login server/Repository:Tag '
+        required: True
+        default: "pcacrbackstage01.azurecr.io/backstage/frontend:v0.4.88"      
+permissions:
+  contents: read	
+
+jobs:
+  Poc-deploy-app:
+    uses: ./.github/workflows/Template-aks-k8-deploy.yml
+    with:
+      working_environment: "poc"	
+      Azure_Namespace_AKS: "poc-backstage"
+      Azure_SecretProviderClass_AKS: "np-kv-platformeng-01"
+      Azure_keyvaultName_AKS: "np-kv-platformeng-01"
+      Azure_Deployment_AKS: "backstage-frontend-deployment"
+      Azure_Containers_AKS: "backstage-frontend"
+      Azure_image_AKS: ${{ github.event.inputs.ACR_Image_Path }}
+      Azure_Service_AKS: "backstage-frontend-service"
+      Azure_tlscertkeyvaulturi_AKS: "https://np-kv-platformeng-01.vault.azure.net/certificates/platformonepem"
+      Azure_Ingress_AKS: "backstage-frontend-ingress"
+      Azure_host_AKS: "platformonepoc.corp.evolenthealth.com"
+      Azure_hosts_AKS: "platformonepoc.corp.evolenthealth.com"
+      Azure_Resourcegroupname_AKS: "pc-rg-backstage-01"
+      Azure_Clustername_AKS: "pc-aks-backstage-01"
+      Azure_Manifestsfile_AKS: "manifests/platformone.yaml"
+      Azure_Infra_Manifestsfile_AKS: "manifests/infrastructure.yaml"
+      Azure_userAssignedIdentityID_AKS: "af1c4f03-43a1-4541-a8ed-fcba8a7258de"
+      Azure_tenantId_AKS: "49bcf059-afa8-4bf9-8470-fad0c9cce27d"
+      Azure_loadbalancerip_AKS: "10.148.131.99"
+      Cert_Secret_Name: "platformonepem"
+    secrets: inherit
+
+  Dev-deploy-app:
+    uses: ./.github/workflows/Template-aks-k8-deploy.yml
+    with:
+      working_environment: "development"
+      Azure_Namespace_AKS: "dv-ns-pf1"
+      Azure_SecretProviderClass_AKS: "dv-spc-pf1"
+      Azure_keyvaultName_AKS: "dv-kv-pf1-01"
+      Azure_Deployment_AKS: "dv-dpy-pf1"
+      Azure_Containers_AKS: "dv-pod-pf1"
+      Azure_image_AKS: ${{ github.event.inputs.ACR_Image_Path }}
+      Azure_Service_AKS: "dv-svc-pf1"
+      Azure_tlscertkeyvaulturi_AKS: "https://dv-kv-pf1-01.vault.azure.net/certificates/platformone-dv"
+      Azure_Ingress_AKS: "dv-ing-pf1"
+      Azure_host_AKS: "platformonedev.corp.evolenthealth.com"
+      Azure_hosts_AKS: "platformonedev.corp.evolenthealth.com"
+      Azure_Resourcegroupname_AKS: "np-rg-aks-01"
+      Azure_Clustername_AKS: "np-aks-platformeng-01"
+      Azure_Manifestsfile_AKS: "manifests/platformone.yaml"
+      Azure_Infra_Manifestsfile_AKS: "manifests/infrastructure.yaml"
+      Azure_userAssignedIdentityID_AKS: "005dc649-0df5-4210-b246-111926c3fe51"
+      Azure_tenantId_AKS: "49bcf059-afa8-4bf9-8470-fad0c9cce27d"
+      Azure_loadbalancerip_AKS: "10.148.131.99"
+      Cert_Secret_Name: "platformone-dv"
+    secrets: inherit
+
+  ST-deploy-app:
+    needs: [Dev-deploy-app]
+    uses: ./.github/workflows/Template-aks-k8-deploy.yml
+    with:
+      working_environment: "staging"
+      Azure_Namespace_AKS: "st-platformone"
+      Azure_SecretProviderClass_AKS: "st-kv-pf1-01"
+      Azure_keyvaultName_AKS: "st-kv-pf1-01"
+      Azure_Deployment_AKS: "platformone-frontend-deployment"
+      Azure_Containers_AKS: "platformone-frontend"
+      Azure_image_AKS: ${{ github.event.inputs.ACR_Image_Path }}
+      Azure_Service_AKS: "platformone-frontend-service"
+      Azure_tlscertkeyvaulturi_AKS: "https://st-kv-pf1-01.vault.azure.net/certificates/platformone-st"
+      Azure_Ingress_AKS: "platformone-frontend-ingress"
+      Azure_host_AKS: "platformonest.corp.evolenthealth.com"
+      Azure_hosts_AKS: "platformonest.corp.evolenthealth.com"
+      Azure_Resourcegroupname_AKS: "np-rg-aks-01"
+      Azure_Clustername_AKS: "np-aks-platformeng-01"
+      Azure_Manifestsfile_AKS: "manifests/platformone.yaml"
+      Azure_Infra_Manifestsfile_AKS: "manifests/infrastructure.yaml"
+      Azure_userAssignedIdentityID_AKS: "005dc649-0df5-4210-b246-111926c3fe51"
+      Azure_tenantId_AKS: "49bcf059-afa8-4bf9-8470-fad0c9cce27d"
+      Azure_loadbalancerip_AKS: "10.148.131.99"
+      Cert_Secret_Name: "platformone-st"
+    secrets: inherit
+
+  PR-deploy-app:
+    needs: [ST-deploy-app]
+    uses: ./.github/workflows/Template-aks-k8-deploy.yml
+    with:
+      working_environment: "production"
+      Azure_Namespace_AKS: "pr-platformone"
+      Azure_SecretProviderClass_AKS: "pr-kv-pf1-01"
+      Azure_keyvaultName_AKS: "pr-kv-pf1-01"
+      Azure_Deployment_AKS: "platformone-frontend-deployment"
+      Azure_Containers_AKS: "platformone-frontend"
+      Azure_image_AKS: ${{ github.event.inputs.ACR_Image_Path }}
+      Azure_Service_AKS: "platformone-frontend-service"
+      Azure_tlscertkeyvaulturi_AKS: "https://pr-kv-pf1-01.vault.azure.net/certificates/platformone-pr"
+      Azure_Ingress_AKS: "platformone-frontend-ingress"
+      Azure_host_AKS: "platformone.corp.evolenthealth.com"
+      Azure_hosts_AKS: "platformone.corp.evolenthealth.com"
+      Azure_Resourcegroupname_AKS: "pr-rg-aks-01"
+      Azure_Clustername_AKS: "pr-aks-platformeng-01"
+      Azure_Manifestsfile_AKS: "manifests/platformone.yaml"
+      Azure_Infra_Manifestsfile_AKS: "manifests/infrastructure.yaml"
+      Azure_userAssignedIdentityID_AKS: "*************"
+      Azure_tenantId_AKS: "49bcf059-afa8-4bf9-8470-fad0c9cce27d"
+      Azure_loadbalancerip_AKS: "*****"
+      Cert_Secret_Name: "platformone-pr"
+    secrets: inherit 
