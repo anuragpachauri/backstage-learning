@@ -34,17 +34,12 @@ jobs:
           
       - name: Run Dockerfile Update Script
         run: |
-          ./update_dockerfile.sh ./Dockerfilenew new-config.yaml
+          ./update_dockerfile.sh ./Dockerfile new-config.yaml
           
       - name: Verify Dockerfile Update
         run: |
           echo "Updated Dockerfile contents:"
-          cat ./Dockerfilenew
-
-      - name: Set Working Directory for Build
-        run: |
-          echo "Setting working directory to current folder"
-        working-directory: .
+          cat ./Dockerfile
 
       - name: List current directory contents
         run: ls -la
@@ -52,7 +47,7 @@ jobs:
       - name: Build & Push
         uses: docker/build-push-action@v5.3.0
         with:
-          file: ./Dockerfilenew
+          file: ./Dockerfile
           push: true
           build-args: |
             version=${{  github.ref_name }}
