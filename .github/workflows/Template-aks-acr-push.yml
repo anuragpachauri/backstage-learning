@@ -40,7 +40,12 @@ jobs:
         run: |
           echo "Updated Dockerfile contents:"
           cat ./Dockerfilenew
-          
+
+      - name: Set Working Directory for Build
+        run: |
+          echo "Setting working directory to current folder"
+        working-directory: .
+           
       - name: Build & Push
         uses: docker/build-push-action@v5.3.0
         with:
