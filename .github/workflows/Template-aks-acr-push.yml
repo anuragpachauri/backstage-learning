@@ -45,6 +45,9 @@ jobs:
         run: |
           echo "Setting working directory to current folder"
         working-directory: .
+
+      - name: List current directory contents
+        run: ls -la
            
       - name: Build & Push
         uses: docker/build-push-action@v5.3.0
