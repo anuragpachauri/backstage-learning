@@ -33,8 +33,12 @@ USER node
 # If this occurs, then ensure BuildKit is enabled (`DOCKER_BUILDKIT=1`) so the app dir is correctly created as `node`.
 WORKDIR /app
 
+ARG ENV=production
+
 # This switches many Node.js dependencies to production mode.
 ENV NODE_ENV production
+ENV ENV=${ENV}
+
 
 
 # Copy repo skeleton first, to avoid unnecessary docker cache invalidation.
