@@ -22,7 +22,7 @@ jobs:
     if: github.ref_type == 'tag' 
     runs-on: ubuntu-latest
     env:
-      ENV: staging 
+      ENV: production 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3

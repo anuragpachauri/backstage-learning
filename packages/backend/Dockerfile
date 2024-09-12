@@ -36,7 +36,7 @@ WORKDIR /app
 ARG ENV=production
 
 # This switches many Node.js dependencies to production mode.
-ENV NODE_ENV production
+ENV NODE_ENV development
 ENV ENV=${ENV}
 
 
