@@ -26,10 +26,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get install -y --no-install-recommends libsqlite3-dev
 
 # From here on we use the least-privileged `node` user to run the backend.
-
-COPY entry.sh ./entry.sh
-RUN chmod +x ./entry.sh
-
 USER node
 
 # This should create the app dir as `node`.
@@ -59,6 +55,12 @@ COPY --chown=node:node packages/backend/dist/bundle.tar.gz app-config*.yaml ./
 COPY --chown=node:node examples ./examples
 COPY --chown=node:node examples ./azure-deploy
 RUN tar xzf bundle.tar.gz && rm bundle.tar.gz
+
+USER root
+COPY entry.sh ./entry.sh
+RUN chmod +x ./entry.sh
+USER node
+
 
 CMD ["sh", "./entry.sh"]
 
